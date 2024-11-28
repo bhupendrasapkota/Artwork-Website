@@ -4,7 +4,7 @@ import Sortby from "./SortBy/Sortby";
 
 const Category = () => {
   return (
-    <section className="bg-black text-white border border-zinc-700 flex flex-col h-auto w-auto p-5 font-mono space-y-16">
+    <section className="bg-white text-black border border-zinc-700 flex flex-col h-auto w-auto p-5 font-mono space-y-16">
       <Sortby />
       <div className="space-y-1">
         <Genres />
