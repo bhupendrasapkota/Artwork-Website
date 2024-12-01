@@ -1,5 +1,15 @@
+import Post from "./Post/Post.tsx";
+import Postedpictures from "./Posteditems/Postedpictures.tsx";
+import Profile from "./UserProfile/Profile.tsx";
+
 const Profie = () => {
-  return <div className="pt-24 bg-white text-black">Profie</div>;
+  return (
+    <section className=" pt-24 space-y-0.5 h-screen">
+      <Profile />
+      <Post />
+      <Postedpictures />
+    </section>
+  );
 };
 
 export default Profie;

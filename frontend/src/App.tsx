@@ -12,23 +12,23 @@ import Download from "./pages/Download/Download";
 import Profie from "./components/Profile/Profie";
 
 function App() {
-  return (    
-      <Router>
-        <Navbar />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/explore" element={<Explore />} />
-            <Route path="/trending" element={<Trending />} />
-            <Route path="/feed" element={<Feed />} />
-            <Route path="/download" element={<Download />} />
-            <Route path="/profile" element={<Profie />} />
-          </Routes>
-        </main>
-        <Footer />
-      </Router>
+  return (
+    <Router>
+      <Navbar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/trending" element={<Trending />} />
+          <Route path="/feed" element={<Feed />} />
+          <Route path="/download" element={<Download />} />
+          <Route path="/profile" element={<Profie />} />
+        </Routes>
+      </main>
+      <Footer />
+    </Router>
   );
 }
 

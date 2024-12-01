@@ -1,77 +1,77 @@
 [
   {
     "title": "Classical",
-    "games": 1,
+    "items": 1,
     "image": "./images/photos/Genres/Classical.png"
   },
   {
     "title": "Urban",
-    "games": 2,
+    "items": 2,
     "image": "./images/photos/Genres/Urban.jpg"
   },
   {
     "title": "Symbolism",
-    "games": 3,
+    "items": 3,
     "image": "./images/photos/Genres/Symbolism.png"
   },
   {
     "title": "Expressionism",
-    "games": 4,
+    "items": 4,
     "image": "./images/photos/Genres/Expressionism.png"
   },
   {
     "title": "Conceptual",
-    "games": 5,
+    "items": 5,
     "image": "./images/photos/Genres/Conceptual.png"
   },
   {
     "title": "Abstract",
-    "games": 6,
+    "items": 6,
     "image": "./images/photos/Genres/Abstract.jpg"
   },
   {
     "title": "Fantasy",
-    "games": 7,
+    "items": 7,
     "image": "./images/photos/Genres/Fantasy.jpg"
   },
   {
     "title": "Impressionism",
-    "games": 8,
+    "items": 8,
     "image": "./images/photos/Genres/Impressionism.png"
   },
   {
     "title": "Minimalism",
-    "games": 9,
+    "items": 9,
     "image": "./images/photos/Genres/Minimalism.jpg"
   },
   {
     "title": "Portrait",
-    "games": 10,
+    "items": 10,
     "image": "./images/photos/Genres/Portrait.jpg"
   },
   {
     "title": "Realism",
-    "games": 11,
+    "items": 11,
     "image": "./images/photos/Genres/Realism.jpg"
   },
   {
     "title": "Surrealism",
-    "games": 12,
+    "items": 12,
     "image": "./images/photos/Genres/Surrealism.jpg"
   },
   {
     "title": "Stil life",
-    "games": 13,
+    "items": 13,
     "image": "./images/photos/Genres/StillLife.jpg"
   },
   {
     "title": "Landscape",
-    "games": 14,
+    "items": 14,
     "image": "./images/photos/Genres/Landscape.jpg"
   },
   {
     "title": "Pop",
-    "games": 15,
+    "items": 15,
     "image": "./images/photos/Genres/Pop.jpg"
   }
 ]

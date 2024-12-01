@@ -1,46 +1,114 @@
-import videoData from "../../../Data/Bannervideo.json";
+import { useState, useEffect } from "react";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import imageData from "../../../Data/Banner.json";
 
 const Banner = () => {
-  const videoSrc = videoData.bannerVideo;
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+  useEffect(() => {
+    if (!imageData || imageData.length === 0) {
+      console.error("No image data available.");
+    }
+  }, []);
+
+  const nextImage = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === imageData.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const prevImage = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? imageData.length - 1 : prevIndex - 1
+    );
+  };
+
+  if (!imageData || imageData.length === 0) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <section
-      className="relative w-full"
-      style={{ height: "clamp(600px, 45vw, 900px)" }}
+      className="relative flex flex-col items-center justify-center bg-black pt-24 font-mono border-b border-zinc-700"
+      style={{
+        height: "clamp(650px, 20vw, 900px)",
+        backgroundImage: `url(${imageData[currentIndex].src})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
     >
-      <video
-        className="absolute inset-0 h-full w-full object-cover"
-        autoPlay
-        loop
-        muted
-      >
-        <source src={videoSrc} type="video/mp4" />
-      </video>
-      <div className="absolute inset-0 bg-black opacity-50 flex justify-center items-center" />
-      <div className="absolute inset-0 flex flex-col justify-center items-center bg-transparent p-4 font-mono text-white">
-        <h1
-          className="mb-2 uppercase bg-transparent"
-          style={{ fontSize: "clamp(1.5rem, 3vw + 1rem, 3rem)" }} // Responsive font size for h1
-        >
-          Welcome to Our Artme
-        </h1>
-        <p
-          className="mb-4 bg-transparent"
-          style={{ fontSize: "clamp(1rem, 2vw + 0.5rem, 1.4rem)" }} // Responsive font size for p
-        >
-          Experience the best
-        </p>
-        <button
-          className="group relative m-1 cursor-pointer overflow-hidden border-2 rounded-lg bg-white px-14 py-2 border-black hover:border-white"
-          style={{
-            fontSize: "clamp(1.5rem, 2vw + 0.25rem, 1rem)",
-          }} // Responsive font size for button
-        >
-          <span className="ease absolute top-1/2 h-0 w-64 origin-center -translate-x-20 rotate-45 bg-black transition-all duration-300 group-hover:h-64 group-hover:-translate-y-32"></span>
-          <span className="ease relative text-slate-900 bg-transparent transition duration-300 group-hover:text-white">
-            Explore
-          </span>
-        </button>
+      {/* Blur Overlay */}
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+
+      <div className="relative flex flex-col lg:flex-row items-center bg-white rounded shadow-black p-4 lg:p-6 w-11/12 lg:w-5/6 max-w-6xl space-y-4 lg:space-y-0 lg:space-x-6">
+        {/* Image Section */}
+        <div className="w-full lg:w-1/2 flex justify-center">
+          <div className="w-full h-48 sm:h-64 md:h-80 lg:h-[400px] overflow-hidden">
+            <img
+              src={imageData[currentIndex].src}
+              alt={imageData[currentIndex].name}
+              className="w-full h-full object-contain"
+            />
+          </div>
+        </div>
+
+        {/* Info Section */}
+        <div className="w-full lg:w-1/2 flex flex-col justify-between space-y-6">
+          <div className="uppercase flex flex-col items-center justify-center text-3xl sm:text-4xl md:text-5xl font-serif">
+            <h1 className="text-clamp text-center leading-tight">Feel</h1>
+            <h1 className="text-clamp text-center leading-tight">the</h1>
+            <h1 className="text-clamp text-center leading-tight">nature</h1>
+          </div>
+
+          <div>
+            <h2 className="text-sm sm:text-lg md:text-xl text-gray-800 mb-2 lg:mb-4 text-center">
+              {imageData[currentIndex].name}
+            </h2>
+
+            {/* Progress Bar */}
+            <div className="flex flex-col md:flex-row items-center mt-2 lg:mt-4 space-y-2 md:space-y-0 md:space-x-4">
+              <div className="flex items-center text-xs sm:text-sm md:text-base font-medium text-gray-500">
+                {imageData.map((_, index) => (
+                  <span
+                    key={index}
+                    className={`mr-1 ${
+                      index === currentIndex
+                        ? "text-black font-bold"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    {index + 1 < 10 ? `0${index + 1}` : index + 1}
+                  </span>
+                ))}
+              </div>
+
+              <div className="relative flex-grow h-1 bg-gray-300 rounded">
+                <div
+                  className="absolute top-0 left-0 h-1 bg-black rounded transition-all duration-500 ease-in-out"
+                  style={{
+                    width: `${((currentIndex + 1) / imageData.length) * 100}%`,
+                  }}
+                ></div>
+              </div>
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="flex items-center justify-center md:justify-end mt-4 lg:mt-6 space-x-4">
+              <button
+                onClick={prevImage}
+                className="group w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-zinc-300 rounded-full hover:bg-black"
+              >
+                <FaArrowLeft className="text-gray-600 bg-transparent group-hover:text-white" />
+              </button>
+              <button
+                onClick={nextImage}
+                className="group w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-zinc-300 rounded-full hover:bg-black"
+              >
+                <FaArrowRight className="text-gray-600 bg-transparent group-hover:text-white" />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

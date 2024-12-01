@@ -3,8 +3,8 @@ import genres from "../../../Data/genres.json";
 
 const Genre = () => {
   return (
-    <section className="relative flex flex-col justify-center items-center text-black bg-white space-y-5 border-t border-black py-8 px-2 font-mono">
-      <div className="w-full flex items-center justify-between px-10 py-2 uppercase">
+    <section className="relative flex flex-col justify-center items-center text-black bg-white space-y-5 border-t border-black py-5 px-2 font-mono">
+      <div className="w-full flex items-center justify-between px-10 uppercase">
         <div className="text-lg">Genres</div>
         <div className="text-sm cursor-pointer">All Genres</div>
       </div>
@@ -36,7 +36,7 @@ const Genre = () => {
                   <Link to="/">{genre.title}</Link>
                 </h2>
                 <h3 className="text-gray-600 text-sm text-[clamp(1rem)]">
-                  {genre.games} Items
+                  {genre.items} Items
                 </h3>
               </div>
             </div>

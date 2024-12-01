@@ -6,7 +6,7 @@ import Recently from "./RecentlyAddedArt/Recentlyart";
 
 const Home = () => {
   return (
-    <div className="bg-red-400 h-full flex flex-col overflow-y-auto">
+    <div className="bg-black h-full flex flex-col overflow-y-auto">
       <Banner />
       <Genre />
       <Article />
