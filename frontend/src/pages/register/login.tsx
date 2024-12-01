@@ -1,5 +1,7 @@
-import { FaGoogle, FaApple, FaArrowRight} from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import Signin from "../../components/Functional/Signin/Signin";
+import Gf from "../../components/Functional/Signin/Gf";
 const Register = () => {
   return (
     <section className="relative bg-white text-black border-black p-1 pt-24 font-mono">
@@ -25,43 +27,13 @@ const Register = () => {
           <div className="flex flex-col items-center justify-center w-full h-[49.55rem] border border-black p-2">
             <form className="flex flex-col items-center justify-center w-full h-full space-y-5">
               <h3 className="text-8xl font-mono">Login</h3>
-              <button
-                type="submit"
-                className="group flex items-center justify-center border border-black gap-2 w-96 h-12 py-2 px-4 hover:text-white hover:bg-black"
-              >
-                <FaGoogle className="text-2xl group-hover:text-white group-hover:bg-black" />
-                Sign In With Google
-              </button>
-              <button
-                type="submit"
-                className="group flex items-center justify-center border border-black hover:text-white hover:bg-black gap-2 w-96 h-12 py-2 px-4"
-              >
-                <FaApple className="text-2xl group-hover:text-white group-hover:bg-black" />
-                Sign In With Apple
-              </button>
+              <Gf />
               <div className="flex items-center justify-center w-80 h-10 space-x-2">
                 <h1 className="border justify-center w-full border-zinc-600" />
                 <h1>Or</h1>
                 <h1 className="border flex items-center justify-center w-full border-zinc-600" />
               </div>
-              <input
-                type="email"
-                placeholder="Phone, email, or username"
-                className="border border-black p-2 w-96 h-16"
-              />
-              <button
-                type="submit"
-                className="group flex items-center justify-center border border-black gap-2 w-96 h-12 py-2 px-4 hover:text-white hover:bg-black"
-              >
-                Next
-                <FaArrowRight className="text-xs group-hover:text-white group-hover:bg-black" />
-              </button>
-              <button
-                type="submit"
-                className=" flex items-center justify-center border border-black gap-2 w-96 h-12 py-2 px-4 hover:text-white hover:bg-black"
-              >
-                Forgot Password?
-              </button>
+              <Signin />
             </form>
             <div className="flex items-center space-x-2">
               <h1>Don't have an account?</h1>

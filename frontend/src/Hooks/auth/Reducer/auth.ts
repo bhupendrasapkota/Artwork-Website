@@ -1,0 +1,326 @@
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { apiCallBegun } from "./api";
+import httpService from "../utils/httpService";
+
+interface AuthState {
+  access: string | null;
+  refresh: string | null;
+  isAuthenticated: boolean;
+  user: Record<string, any>;
+  loading: boolean;
+  error: string | null;
+}
+
+interface AuthPayload {
+  access: string;
+  refresh: string;
+}
+
+const initialState: AuthState = {
+  access: localStorage.getItem("access"),
+  refresh: localStorage.getItem("refresh"),
+  isAuthenticated: false,
+  user: {},
+  loading: false,
+  error: null,
+};
+
+const slice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    authStarted: (auth) => {
+      auth.loading = true;
+    },
+
+    authSuccess: (auth, action: PayloadAction<AuthPayload>) => {
+      localStorage.setItem("access", action.payload.access);
+      localStorage.setItem("refresh", action.payload.refresh);
+
+      auth.isAuthenticated = true;
+      auth.access = action.payload.access;
+      auth.refresh = action.payload.refresh;
+      auth.loading = false;
+      auth.error = null;
+    },
+
+    userSignedUp: (auth) => {
+      auth.isAuthenticated = false;
+    },
+
+    userLoaded: (auth, action: PayloadAction<Record<string, any>>) => {
+      auth.user = action.payload;
+      auth.loading = false;
+    },
+
+    userLoadingFailed: (auth) => {
+      auth.user = {};
+      auth.loading = false;
+    },
+
+    authFailed: (auth, action: PayloadAction<string>) => {
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+
+      auth.isAuthenticated = false;
+      auth.access = null;
+      auth.refresh = null;
+      auth.error = action.payload;
+      auth.loading = false;
+    },
+
+    authenticationVerified: (auth) => {
+      auth.isAuthenticated = true;
+    },
+
+    authenticationFailed: (auth) => {
+      auth.isAuthenticated = false;
+    },
+
+    loggedOut: (auth) => {
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+
+      auth.isAuthenticated = false;
+      auth.access = null;
+      auth.refresh = null;
+      auth.user = {};
+      auth.error = null;
+    },
+  },
+});
+
+const {
+  authStarted,
+  authSuccess,
+  userSignedUp,
+  userLoaded,
+  userLoadingFailed,
+  authFailed,
+  authenticationVerified,
+  authenticationFailed,
+  loggedOut,
+} = slice.actions;
+
+export default slice.reducer;
+
+// Action creators
+export const checkAuthenticated = () => async (dispatch: any) => {
+  const access = localStorage.getItem("access");
+
+  if (access) {
+    const headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
+
+    const data = { token: access };
+
+    try {
+      const response = await httpService.post("/auth/jwt/verify/", data, headers);
+
+      if (response.data.code !== "token_not_valid") {
+        await dispatch(authenticationVerified());
+      }
+    } catch (error) {
+      dispatch(authenticationFailed());
+    }
+  } else {
+    dispatch(authenticationFailed());
+  }
+};
+
+export const loadUser = () => (dispatch: any) => {
+  const access = localStorage.getItem("access");
+
+  if (access) {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `JWT ${access}`,
+      Accept: "application/json",
+    };
+
+    dispatch(
+      apiCallBegun({
+        url: "/auth/users/me/",
+        method: "GET",
+        headers,
+        onStart: authStarted.type,
+        onSuccess: userLoaded.type,
+        onError: userLoadingFailed.type,
+      })
+    );
+  } else {
+    dispatch(userLoadingFailed());
+  }
+};
+
+export const googleAuthenticate =
+  (state: string, code: string) => async (dispatch: any) => {
+    if (state && code && !localStorage.getItem("access")) {
+      const headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+      };
+
+      const details = { code, state };
+
+      const formBody = Object.keys(details)
+        .map(
+          (key) =>
+            encodeURIComponent(key) + "=" + encodeURIComponent(details[key])
+        )
+        .join("&");
+
+      await dispatch(
+        apiCallBegun({
+          url: `/auth/o/google-oauth2/?${formBody}`,
+          method: "POST",
+          headers,
+          onStart: authStarted.type,
+          onSuccess: authSuccess.type,
+          onError: authFailed.type,
+        })
+      );
+
+      dispatch(loadUser());
+    }
+  };
+
+export const facebookAuthenticate =
+  (state: string, code: string) => async (dispatch: any) => {
+    if (state && code && !localStorage.getItem("access")) {
+      const headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+      };
+
+      const details = { code, state };
+
+      const formBody = Object.keys(details)
+        .map(
+          (key) =>
+            encodeURIComponent(key) + "=" + encodeURIComponent(details[key])
+        )
+        .join("&");
+
+      await dispatch(
+        apiCallBegun({
+          url: `/auth/o/facebook/?${formBody}`,
+          method: "POST",
+          headers,
+          onStart: authStarted.type,
+          onSuccess: authSuccess.type,
+          onError: authFailed.type,
+        })
+      );
+
+      dispatch(loadUser());
+    }
+  };
+
+export const login =
+  (email: string, password: string) => async (dispatch: any) => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const body = { email, password };
+
+    await dispatch(
+      apiCallBegun({
+        url: "/auth/jwt/create/",
+        method: "POST",
+        data: body,
+        headers,
+        onStart: authStarted.type,
+        onSuccess: authSuccess.type,
+        onError: authFailed.type,
+      })
+    );
+
+    dispatch(loadUser());
+  };
+
+export const signup =
+  (
+    first_name: string,
+    last_name: string,
+    email: string,
+    password: string,
+    re_password: string
+  ) =>
+  async (dispatch: any) => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const body = { first_name, last_name, email, password, re_password };
+
+    await dispatch(
+      apiCallBegun({
+        url: "/auth/users/",
+        method: "POST",
+        data: body,
+        headers,
+        onStart: authStarted.type,
+        onSuccess: userSignedUp.type,
+        onError: authFailed.type,
+      })
+    );
+  };
+
+export const verify =
+  (uid: string, token: string) => async (dispatch: any) => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const body = { uid, token };
+
+    try {
+      await httpService.post("/auth/users/activation/", body, headers);
+      dispatch({ type: "ACTIVATION_SUCCESS" });
+    } catch (error) {
+      dispatch({ type: "ACTIVATION_FAILED" });
+    }
+  };
+
+export const reset_password =
+  (email: string) => async (dispatch: any) => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const body = { email };
+
+    try {
+      await httpService.post("/auth/users/reset_password/", body, headers);
+      dispatch({ type: "RESET_PASSWORD_SUCCESS" });
+    } catch (error) {
+      dispatch({ type: "RESET_PASSWORD_FAILED" });
+    }
+  };
+
+export const reset_password_confirm =
+  (uid: string, token: string, new_password: string, re_new_password: string) =>
+  async (dispatch: any) => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const body = { uid, token, new_password, re_new_password };
+
+    try {
+      await httpService.post(
+        "/auth/users/reset_password_confirm/",
+        body,
+        headers
+      );
+      dispatch({ type: "RESET_PASSWORD_CONFIRM_SUCCESS" });
+    } catch (error) {
+      dispatch({ type: "RESET_PASSWORD_CONFIRM_FAILED" });
+    }
+  };
+
+export const logout = () => (dispatch: any) => {
+  dispatch({ type: loggedOut.type });
+};

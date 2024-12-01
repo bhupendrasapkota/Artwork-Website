@@ -12,8 +12,7 @@ import Download from "./pages/Download/Download";
 import Profie from "./components/Profile/Profie";
 
 function App() {
-  return (
-    <>
+  return (    
       <Router>
         <Navbar />
         <main>
@@ -30,7 +29,6 @@ function App() {
         </main>
         <Footer />
       </Router>
-    </>
   );
 }
 
