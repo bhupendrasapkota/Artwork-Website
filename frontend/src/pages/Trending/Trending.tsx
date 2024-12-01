@@ -8,5 +8,3 @@ const Trending = () => {
 };
 
 export default Trending;
-
-// Hello this is a master GiBranchArrow.
