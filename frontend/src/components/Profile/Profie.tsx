@@ -8,6 +8,9 @@ const Profie = () => {
       <Profile />
       <Post />
       <Postedpictures />
+      <h1>
+        Hello testing branch
+      </h1>
     </section>
   );
 };
