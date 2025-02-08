@@ -124,9 +124,9 @@ const Navbar = () => {
       </header>
       {/* Search Bar */}
       <div
-        className="z-40 fixed flex items-center justify-between bg-black left-0 right-0 transition-transform px-4 md:px-12"
+        className="z-40 fixed  flex items-start justify-start flex-col  bg-zinc-200  left-0 right-0 transition-transform px-4 md:px-10"
         style={{
-          height: "clamp(6rem, 10vw, 10rem)", // Responsive height
+          height: "clamp(6rem, 20vw,80rem)", // Responsive height
           transform: `translateY(${
             isSearchBarVisible ? "clamp(4rem, 6vw, 6rem)" : "-100%"
           })`, // Responsive translate-y
@@ -135,13 +135,25 @@ const Navbar = () => {
         <input
           type="text"
           placeholder="Search Me"
-          className="w-full p-2 text-zinc-400 focus:text-white border-b-2 bg-black border-gray-500 focus:outline-none focus:border-white"
+          className="w-full p-2 text-zinc-500 focus:text-black border-b-2 bg-transparent border-b-zinc-500 focus:outline-none focus:border-black"
           style={{
             fontSize: "clamp(1rem, 3vw, 4rem)", // Responsive font size
             fontWeight: "300", // Lighter font weight for a minimal look
           }}
           aria-label="Search input" // Adding aria-label for accessibility
         />
+        <div className="h-full w-full flex items-start justify-end bg-transparent">
+          <button
+            className=" text-white bg-black py-2 px-4"
+            style={{
+              fontSize: "clamp(1rem, 3vw, 4rem)", // Responsive font size
+              fontWeight: "300", // Lighter font weight for a minimal look
+            }}
+            onClick={toggleSearchBar}
+          >
+            Magic
+          </button>
+        </div>
       </div>
     </>
   );
