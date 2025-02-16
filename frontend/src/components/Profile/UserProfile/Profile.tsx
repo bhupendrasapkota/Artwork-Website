@@ -7,15 +7,26 @@ const Profile = () => {
     username: "",
     bio: "",
     profile_picture: "",
+    about_me: "",
+    contact: "",
   });
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isMove, setIsMove] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const navigate = useNavigate();
 
-  // Fetch profile data
+  useEffect(() => {
+    if (isMove) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => document.body.classList.remove("overflow-hidden");
+  }, [isMove]);
+
   const fetchProfileData = useCallback(async () => {
     try {
       const { data } = await api.get("/get-profile/");
@@ -33,7 +44,6 @@ const Profile = () => {
     fetchProfileData();
   }, [fetchProfileData]);
 
-  // Handle input change
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
@@ -42,14 +52,12 @@ const Profile = () => {
     []
   );
 
-  // Handle file change
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
     }
   }, []);
 
-  // Update profile
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
@@ -57,6 +65,8 @@ const Profile = () => {
       const formData = new FormData();
       formData.append("username", profile.username);
       formData.append("bio", profile.bio);
+      formData.append("about_me", profile.about_me);
+      formData.append("contact", profile.contact);
       if (selectedFile) {
         formData.append("profile_picture", selectedFile);
       }
@@ -66,7 +76,7 @@ const Profile = () => {
       });
 
       setIsEditing(false);
-      fetchProfileData(); // Refresh after update
+      fetchProfileData();
     } catch (err) {
       const error = err as { response?: { data?: { detail?: string } } };
       console.error("Error updating profile:", error);
@@ -76,7 +86,6 @@ const Profile = () => {
     }
   };
 
-  // Preview image (Memoized)
   const previewImage = useMemo(() => {
     if (selectedFile) return URL.createObjectURL(selectedFile);
     return profile.profile_picture
@@ -84,7 +93,6 @@ const Profile = () => {
       : "/default-avatar.png";
   }, [selectedFile, profile.profile_picture]);
 
-  // Clean up object URLs
   useEffect(() => {
     return () => {
       if (previewImage.startsWith("blob:")) {
@@ -93,21 +101,18 @@ const Profile = () => {
     };
   }, [previewImage]);
 
-  // Logout if not authenticated
   useEffect(() => {
     if (!localStorage.getItem("userToken")) {
-      navigate("/signin");
+      navigate("/login");
     }
   }, [navigate]);
 
-  // Loading or error states
   if (loading) return <p className="text-center text-gray-600">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="relative border font-mono text-black bg-white shadow-lg p-6 flex items-start gap-10 border-b border-black">
+    <div className="relative border font-mono text-black bg-white shadow-lg p-6 flex items-start justify-start gap-10 border-b border-black">
       <div className="flex-shrink-0 flex flex-col items-center justify-center">
-        {/* Profile Picture */}
         <label htmlFor="profilePicture" className="cursor-pointer">
           <img
             src={previewImage}
@@ -123,50 +128,116 @@ const Profile = () => {
           onChange={handleFileChange}
         />
 
-        {/* Profile Info */}
-        <div className="mt-4 text-center">
-          {isEditing ? (
-            <>
-              <input
-                type="text"
-                name="username"
-                value={profile.username}
-                onChange={handleInputChange}
-                className="text-xl font-bold border px-2 py-1 rounded"
-              />
-              <textarea
-                name="bio"
-                value={profile.bio}
-                onChange={handleInputChange}
-                className="text-sm text-gray-500 border px-2 py-1 rounded w-full mt-2"
-              />
-              <button
-                onClick={handleSubmit}
-                className="mt-3 px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="mt-3 ml-2 px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700"
-              >
-                Cancel
-              </button>
-            </>
-          ) : (
-            <>
-              <h2 className="text-xl font-bold">{profile.username || "Unknown User"}</h2>
-              <p className="text-sm text-gray-500">{profile.bio || "No bio available"}</p>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="mt-3 px-4 py-2 text-white bg-zinc-700 rounded-md hover:bg-black"
-              >
-                Edit Profile
-              </button>
-            </>
-          )}
+        <div className="mt-4 text-center flex flex-col items-center justify-center">
+          <h2 className="text-xl font-bold">{profile.username || "Unknown User"}</h2>
+          <p className="text-sm text-gray-500">{profile.bio || "No bio available"}</p>
+          <button
+            onClick={() => {
+              setIsEditing(true);
+              setIsMove(true);
+            }}
+            className="mt-3 px-4 py-2 text-white bg-zinc-700 rounded-md hover:bg-black"
+          >
+            Edit Profile
+          </button>
         </div>
       </div>
+
+      <div className="aboutcontact flex-grow grid grid-cols-3 gap-6 h-60">
+        <div className="border p-4">
+          <h3 className="text-lg font-semibold text-gray-700 border-b border-black pb-4">
+            About Me
+          </h3>
+          <p className="mt-3 text-sm text-gray-600">{profile.about_me}</p>
+        </div>
+
+        <div className="border p-4">
+          <h3 className="text-lg font-semibold text-gray-700 border-b border-black pb-4">
+            Connect
+          </h3>
+          <p className="m-3 text-sm text-gray-600">{profile.contact}</p>
+        </div>
+      </div>
+
+      {isEditing && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
+
+      {/* Image Preview and Upload */}
+      <div className="flex flex-col items-center mb-3">
+        <label htmlFor="editProfilePicture" className="cursor-pointer">
+          <img
+            src={previewImage}
+            alt="Profile"
+            className="w-32 h-32 object-cover rounded-full border border-gray-300 shadow-sm"
+          />
+        </label>
+        <input
+          type="file"
+          id="editProfilePicture"
+          className="hidden"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+        <p className="text-xs text-gray-500 mt-2">Click image to change</p>
+      </div>
+
+      {/* Other Profile Inputs */}
+      <input
+        type="text"
+        name="username"
+        value={profile.username}
+        onChange={handleInputChange}
+        className="w-full border p-2 mb-3"
+        placeholder="Username"
+      />
+      <textarea
+        name="bio"
+        value={profile.bio}
+        onChange={handleInputChange}
+        className="w-full border p-2 mb-3"
+        placeholder="Bio"
+      />
+      <textarea
+        name="about_me"
+        value={profile.about_me}
+        onChange={handleInputChange}
+        className="w-full border p-2 mb-3"
+        placeholder="About Me"
+      />
+      <textarea
+        name="contact"
+        value={profile.contact}
+        onChange={handleInputChange}
+        className="w-full border p-2 mb-3"
+        placeholder="Contact Info"
+      />
+
+      <div className="flex justify-end gap-2">
+        <button
+          onClick={() => {
+            setIsMove(false);
+            handleSubmit();
+          }}
+          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+        >
+          Save
+        </button>
+        <button
+          onClick={() => {
+            setIsEditing(false);
+            setIsMove(false);
+          }}
+          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

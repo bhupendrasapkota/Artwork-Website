@@ -38,7 +38,9 @@ def get_profile(request):
         return Response({
             "username": user.username,
             "bio": profile.bio,
-            "profile_picture": profile.profile_picture.url if profile.profile_picture else None
+            "profile_picture": profile.profile_picture.url if profile.profile_picture else None,
+            "contact": profile.contact,
+            "about_me": profile.about_me,
         })
     except Profile.DoesNotExist:
         return Response({"error": "Profile not found"}, status=404)

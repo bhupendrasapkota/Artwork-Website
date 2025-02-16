@@ -3,17 +3,6 @@ const About_recent = () => {
     <section>
       {/* Main Content Section */}
       <div className="flex-grow grid grid-cols-3 gap-6">
-        {/* About Section */}
-        <div className="border">
-          <h3 className="text-lg font-semibold text-gray-700 border-b border-black pb-4">
-            About Me
-          </h3>
-          <p className="mt-3 text-sm text-gray-600">
-            I am a passionate artist exploring the boundaries of creativity. My
-            work blends modern styles with traditional techniques to tell unique
-            stories through visual art.
-          </p>
-        </div>
 
         {/* Recent Artworks Section */}
         <div className="border">
@@ -61,39 +50,6 @@ const About_recent = () => {
               alt="Artwork 4"
               className="w-24 h-24 rounded-md object-cover shadow-md"
             />
-          </div>
-        </div>
-
-        {/* Social Links Section */}
-        <div className="border">
-          <h3 className="text-lg font-semibold text-gray-700 border-b border-black pb-4">
-            Connect
-          </h3>
-          <div className="m-3 space-y-3">
-            <a
-              href="#"
-              className="flex items-center gap-2 hover:text-zinc-600 text-sm"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span>🌐</span> Portfolio
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-2 hover:text-zinc-600 text-sm"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span>📸</span> Instagram
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-2 hover:text-zinc-600 text-sm"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span>🐦</span> Twitter
-            </a>
           </div>
         </div>
       </div>
