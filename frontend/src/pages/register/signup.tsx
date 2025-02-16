@@ -25,7 +25,7 @@ const signup = () => {
         {/* Greeting Section */}
         <div className="flex flex-col items-center w-full h-full px-4 py-4">
           <div className="flex flex-col items-center justify-center w-full h-[49.55rem] border border-black p-2">
-            <form className="flex flex-col items-center justify-center w-full h-full space-y-5">
+            <div className="flex flex-col items-center justify-center w-full h-full space-y-5">
               <h3 className="text-8xl">SignUp</h3>
               <Gf />
               <div className="flex items-center justify-center w-80 h-10 space-x-2">
@@ -34,7 +34,7 @@ const signup = () => {
                 <h1 className="border flex items-center justify-center w-full border-black" />
               </div>
               <Signup />
-            </form>
+            </div>
             <div className="flex items-center space-x-2">
               <h1>Have an account?</h1>
               <FaArrowRight className="bg-white text-xs" />
