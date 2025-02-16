@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../../../Hooks/api/api"; // Import the custom Axios instance
 
 const Signin = () => {
   const [username, setUsername] = useState("");
@@ -20,24 +20,19 @@ const Signin = () => {
     const userData = { username, password };
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/login/", userData);
+      const response = await api.post("/login/", userData);
 
       console.log("Login Successful:", response.data);
 
       // Store token in localStorage
       localStorage.setItem("userToken", response.data.access_token);
 
-      // Redirect & refresh to update authentication state
-      navigate("/");
-      window.location.reload();
+      // Redirect to profile page
+      navigate("/profile");
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("Login error:", error.response?.data || error);
-        setErrorMessage(error.response?.data?.detail || "Invalid credentials.");
-      } else {
-        console.error("Unexpected error:", error);
-        setErrorMessage("An unexpected error occurred.");
-      }
+      const err = error as { response?: { data?: { detail?: string } } };
+      console.error("Login error:", err.response?.data || error);
+      setErrorMessage(err.response?.data?.detail || "Invalid credentials.");
     }
   };
 

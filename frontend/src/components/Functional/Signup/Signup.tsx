@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../../../Hooks/api/api"; // Using custom Axios instance
 
 const Signup = () => {
   const [username, setUsername] = useState("");
@@ -21,24 +21,19 @@ const Signup = () => {
     const userData = { username, email, password };
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/signup/", userData);
+      const response = await api.post("/signup/", userData);
 
       console.log("Signup Successful:", response.data);
 
       // Store the JWT token in localStorage
       localStorage.setItem("userToken", response.data.access_token);
 
-      // Redirect & refresh to update authentication state
+      // Redirect to home page
       navigate("/");
-      window.location.reload();
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("Signup error:", error.response?.data || error);
-        setErrorMessage(error.response?.data?.detail || "Signup failed.");
-      } else {
-        console.error("Unexpected error:", error);
-        setErrorMessage("An unexpected error occurred.");
-      }
+      const err = error as { response?: { data?: { error?: string } } };
+      console.error("Signup error:", err.response?.data || error);
+      setErrorMessage(err.response?.data?.error || "Signup failed.");
     }
   };
 
