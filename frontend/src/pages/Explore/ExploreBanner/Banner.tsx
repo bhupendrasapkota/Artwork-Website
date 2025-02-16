@@ -58,7 +58,7 @@ const Banner = () => {
   };
 
   return (
-    <section className="relative flex flex-col justify-center items-center text-black bg-white space-y-5 border-t border-black h-96  font-mono border-b-2 border-b-zinc-600 ">
+    <section className="relative flex flex-col justify-center items-center text-black bg-white space-y-5 border-t border-black h-96  font-mono ">
       <div className="w-full flex items-center justify-between px-10 uppercase">
         <div className="text-lg">Genres</div>
         <div className="text-sm cursor-pointer">All Genres</div>
