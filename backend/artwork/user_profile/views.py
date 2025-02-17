@@ -9,20 +9,27 @@ from user_profile.serializers import ProfileSerializer
 @permission_classes([IsAuthenticated])
 def update_profile(request):
     user = request.user
-     
+
     try:
         profile, created = Profile.objects.get_or_create(user=user)
+
+        # Delete old profile picture if a new one is provided
+        if 'profile_picture' in request.data:
+            if profile.profile_picture:  # Check if an existing image exists
+                profile.profile_picture.delete(save=False)  # Delete the old image
+
         # Update the user's username if provided
         username = request.data.get('username')
         if username:
             user.username = username
             user.save()
-            
+
         serializer = ProfileSerializer(profile, data=request.data, partial=True)
-        
+
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "Profile updated successfully", "data": serializer.data})
+
         return Response({"message": "Invalid data", "error": True}, status=400)
 
     except Exception as e:

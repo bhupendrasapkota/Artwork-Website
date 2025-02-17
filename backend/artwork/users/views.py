@@ -7,10 +7,10 @@ from rest_framework.permissions import IsAuthenticated
 import random
 from django.core.mail import send_mail
 from django.core.cache import cache
-from .models import UserProfile  # Corrected import
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import status
+from user_profile.models import Profile  # Corrected import
 
 
 @api_view(['POST'])
@@ -34,8 +34,8 @@ def signup_api(request):
     user = User.objects.create_user(username=username, email=email, password=password)
 
     # Ensure profile is only created if it doesn't exist
-    if not hasattr(user, 'userprofile'):
-        profile = UserProfile.objects.create(user=user)
+    if not hasattr(user, 'profile'):
+        profile = Profile.objects.create(user=user)
 
     # Generate JWT token
     refresh = RefreshToken.for_user(user)

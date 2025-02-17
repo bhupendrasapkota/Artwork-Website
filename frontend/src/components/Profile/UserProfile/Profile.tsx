@@ -113,7 +113,7 @@ const Profile = () => {
   return (
     <div className="relative border font-mono text-black bg-white shadow-lg p-6 flex items-start justify-start gap-10 border-b border-black">
       <div className="flex-shrink-0 flex flex-col items-center justify-center">
-        <label htmlFor="profilePicture" className="cursor-pointer">
+        <label>
           <img
             src={previewImage}
             alt="Profile"
