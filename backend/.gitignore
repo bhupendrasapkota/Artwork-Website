@@ -6,11 +6,3 @@ myVenv/
 
 # Ignore SQLite database file
 db.sqlite3
-
-posts/migrations/
-user_profile/migrations/
-users/migrations/
-posts/__pycache__
-user_profile/__pycache__
-users/__pycache__
-artwork/__pycache__
