@@ -59,22 +59,36 @@ const Items = () => {
             className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
           />
 
-          <div className="absolute top-3 left-80 bg-transparent p-2 flex items-center justify-center rounded group-hover:bg-white">
-            <FaHeart className="text-transparent bg-transparent w-4 h-4 group-hover:text-black" />
+          {/* Displaying the Username and Profile Picture */}
+          <div className="absolute bottom-5 bg-transparent left-3 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <img
+              src={`http://127.0.0.1:8000${post.profile_picture}`} 
+              alt={post.user} 
+              className="w-10 h-10 rounded-full  object-cover"
+            />
+            <div className="flex flex-col items-start justify-start bg-transparent">
+              <span className="text-white bg-transparent text-lg font-sans">{post.user}</span>
+              <span className="text-white bg-transparent text-sm">{post.description}</span>
+            </div>
           </div>
+          <div className=" text-black opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="space-x-1">
+            <div className="absolute top-3 left-72 p-2 flex items-center justify-center rounded bg-white">
+            <FaHeart className=" w-4 h-4" />
+          </div>
+          <div className="absolute top-3 left-80 p-2 flex items-center justify-center rounded bg-white">
+            <FaHeart className=" w-4 h-4" />
+          </div>
+            </div>
 
           <button
             onClick={() => downloadImage(`http://127.0.0.1:8000${post.image}`)}
-            className="absolute bottom-3 left-80 bg-transparent text-transparent text-xs p-2 rounded flex items-center group-hover:text-black group-hover:bg-white"
+            className="absolute bottom-6 left-80 text-xs p-2 rounded flex items-center bg-white"
           >
             <FaDownload className="w-4 h-4 bg-transparent"/>
           </button>
+          </div>
 
-          {post.description && (
-            <p className="absolute bottom-1 left-3 bg-transparent font-extralight text-transparent text-sm p-2 rounded group-hover:text-white">
-              {post.description}
-            </p>
-          )}
         </div>
       ))}
     </Masonry>
