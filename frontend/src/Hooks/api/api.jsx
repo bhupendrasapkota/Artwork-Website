@@ -1,14 +1,31 @@
 import axios from "axios";
 
-// Create an Axios instance
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000", // Your backend URL
+  baseURL: "http://127.0.0.1:8000/api/",
 });
 
-// Add a request interceptor to include the token
+// Function to refresh token
+const refreshToken = async () => {
+  try {
+    const refresh = localStorage.getItem("refresh_token");
+    if (!refresh) throw new Error("No refresh token found");
+
+    const response = await axios.post("http://127.0.0.1:8000/api/users/refresh/", { refresh });
+    
+    localStorage.setItem("access_token", response.data.access);
+    return response.data.access; // Return new access token
+  } catch (error) {
+    console.error("Token refresh failed", error);
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    window.location.href = "/login"; // Redirect to login
+  }
+};
+
+// Attach access token to requests
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("userToken");
+  async (config) => {
+    let token = localStorage.getItem("access_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -17,16 +34,22 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Add a response interceptor to handle expired/invalid tokens
+// Handle expired tokens and refresh automatically
 api.interceptors.response.use(
-  (response) => response, // Return response as it is
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      // Token expired or invalid
-      localStorage.removeItem("userToken"); // Remove the invalid token
-      window.location.href = "/"; // Redirect to sign-in page
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true; // Prevent infinite retry loops
+      const newToken = await refreshToken();
+      if (newToken) {
+        originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+        return api(originalRequest); // Retry the original request
+      }
     }
-    return Promise.reject(error); // Reject other errors
+
+    return Promise.reject(error);
   }
 );
 

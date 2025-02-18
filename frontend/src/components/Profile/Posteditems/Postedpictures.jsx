@@ -7,7 +7,7 @@ const Postedpictures = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    api.get("/api/posts/user/")
+    api.get("/posts/user/")
       .then((response) => {
         console.log("API Response:", response.data.results);
 

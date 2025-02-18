@@ -56,6 +56,11 @@ def login_api(request):
         return Response({
             "access_token": str(refresh.access_token),
             "refresh_token": str(refresh),
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+            }
         }, status=200)
     
     return Response({"error": "Invalid credentials"}, status=401)

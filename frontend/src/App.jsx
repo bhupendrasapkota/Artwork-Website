@@ -12,17 +12,19 @@ import Download from "./pages/Download/Download";
 import Profile from "./components/Profile/Profie"; 
 import NotFound from "./pages/NotFound/Notfound";
 
-
+// ✅ Check authentication using the correct access token
 const isAuthenticated = () => {
-  return !!localStorage.getItem("userToken");
+  return !!localStorage.getItem("access_token"); // Now checking the correct token
 };
 
+// ✅ Wrapper for protected routes
 const ProtectedRoute = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/login" replace />;
 };
 
+// ✅ Redirect logged-in users away from login/signup pages
 const AuthRedirectRoute = ({ children }) => {
-  return isAuthenticated() ? <Navigate to="/" replace /> : children;
+  return isAuthenticated() ? <Navigate to="/profile" replace /> : children;
 };
 
 function App() {

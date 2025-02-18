@@ -184,9 +184,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),  # Short-lived access token
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),  # Short-lived access token
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Long-lived refresh token
-    "ROTATE_REFRESH_TOKENS": False,  # Issue a new refresh token on each refresh
+    "ROTATE_REFRESH_TOKENS": True,  # Issue a new refresh token on each refresh
     "BLACKLIST_AFTER_ROTATION": True,  # Blacklist old refresh tokens
     "AUTH_HEADER_TYPES": ("Bearer",),
 }

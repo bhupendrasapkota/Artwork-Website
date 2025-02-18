@@ -7,7 +7,7 @@ const Items = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    api.get("/api/posts/all/")
+    api.get("/posts/all/")
       .then((response) => {
         console.log("API Response:", response.data.results);
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import api from "../../../Hooks/api/api"; // Import the custom Axios instance
+import api from "../../../Hooks/api/api"; // Import the updated API file
 
 const Signin = () => {
   const [username, setUsername] = useState("");
@@ -17,20 +17,27 @@ const Signin = () => {
       return;
     }
 
-    const userData = { username, password };
-
     try {
-      const response = await api.post("api/users/login/", userData);
+      const response = await api.post("/users/login/", { username, password });
+
       console.log("Login Successful:", response.data);
 
-      // Store token in localStorage
-      localStorage.setItem("userToken", response.data.access_token);
+      // ✅ Store tokens properly
+      localStorage.setItem("access_token", response.data.access_token);
+      localStorage.setItem("refresh_token", response.data.refresh_token);
+      localStorage.setItem("userToken", response.data.access_token); // Keep for compatibility
 
-      // Redirect to profile page
+      // ✅ Debugging: Check if tokens are actually stored
+      console.log("Stored access_token:", localStorage.getItem("access_token"));
+      console.log("Stored refresh_token:", localStorage.getItem("refresh_token"));
+
+      // ✅ Redirect user after successful login
       navigate("/profile");
+      console.log("Navigating to /profile");
+
     } catch (error) {
       console.error("Login error:", error.response?.data || error);
-      setErrorMessage(error.response?.data?.detail || "Invalid credentials.");
+      setErrorMessage(error.response?.data?.error || "Invalid credentials.");
     }
   };
 

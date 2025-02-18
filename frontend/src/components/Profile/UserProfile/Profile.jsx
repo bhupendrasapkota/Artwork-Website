@@ -29,7 +29,7 @@ const Profile = () => {
 
   const fetchProfileData = useCallback(async () => {
     try {
-      const { data } = await api.get("/api/profile/get-profile/");
+      const { data } = await api.get("/profile/get-profile/");
       setProfile(data);
     } catch (err) {
       const error = err.response?.data?.detail || "Failed to load profile.";
@@ -70,7 +70,7 @@ const Profile = () => {
         formData.append("profile_picture", selectedFile);
       }
 
-      await api.put("/api/profile/update-profile/", formData, {
+      await api.put("/profile/update-profile/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
