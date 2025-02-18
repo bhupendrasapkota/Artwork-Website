@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,8 +43,10 @@ INSTALLED_APPS = [
     "users",
     "user_profile",
     "posts",
+    "django_extensions",
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     
 ]
 
@@ -146,6 +149,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000',  # Add your backend's URL here
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -178,3 +183,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),  # Short-lived access token
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Long-lived refresh token
+    "ROTATE_REFRESH_TOKENS": False,  # Issue a new refresh token on each refresh
+    "BLACKLIST_AFTER_ROTATION": True,  # Blacklist old refresh tokens
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}

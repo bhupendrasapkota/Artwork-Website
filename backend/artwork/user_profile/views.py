@@ -1,4 +1,3 @@
-# users/views.py
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -13,10 +12,9 @@ def update_profile(request):
     try:
         profile, created = Profile.objects.get_or_create(user=user)
 
-        # Delete old profile picture if a new one is provided
-        if 'profile_picture' in request.data:
-            if profile.profile_picture:  # Check if an existing image exists
-                profile.profile_picture.delete(save=False)  # Delete the old image
+        if 'profile_picture' in request.data and request.FILES.get('profile_picture'):
+            if profile.profile_picture and profile.profile_picture.name != 'profile_pics/default.jpg':
+                profile.profile_picture.delete(save=False)
 
         # Update the user's username if provided
         username = request.data.get('username')

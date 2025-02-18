@@ -8,8 +8,16 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['bio', 'about_me', 'contact', 'profile_picture']
 
 class UserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer()  # Include Profile data in the UserSerializer
+    profile = ProfileSerializer()
+    password = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'profile']  # Include profile in the response
+        fields = ['id', 'username', 'email', 'password', 'profile']
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
