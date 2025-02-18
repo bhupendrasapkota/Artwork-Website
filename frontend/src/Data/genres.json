@@ -1,0 +1,77 @@
+[
+  {
+    "title": "Classical",
+    "items": 1,
+    "image": "./images/photos/Genres/Classical.png"
+  },
+  {
+    "title": "Urban",
+    "items": 2,
+    "image": "./images/photos/Genres/Urban.jpg"
+  },
+  {
+    "title": "Symbolism",
+    "items": 3,
+    "image": "./images/photos/Genres/Symbolism.png"
+  },
+  {
+    "title": "Expressionism",
+    "items": 4,
+    "image": "./images/photos/Genres/Expressionism.png"
+  },
+  {
+    "title": "Conceptual",
+    "items": 5,
+    "image": "./images/photos/Genres/Conceptual.png"
+  },
+  {
+    "title": "Abstract",
+    "items": 6,
+    "image": "./images/photos/Genres/Abstract.jpg"
+  },
+  {
+    "title": "Fantasy",
+    "items": 7,
+    "image": "./images/photos/Genres/Fantasy.jpg"
+  },
+  {
+    "title": "Impressionism",
+    "items": 8,
+    "image": "./images/photos/Genres/Impressionism.png"
+  },
+  {
+    "title": "Minimalism",
+    "items": 9,
+    "image": "./images/photos/Genres/Minimalism.jpg"
+  },
+  {
+    "title": "Portrait",
+    "items": 10,
+    "image": "./images/photos/Genres/Portrait.jpg"
+  },
+  {
+    "title": "Realism",
+    "items": 11,
+    "image": "./images/photos/Genres/Realism.jpg"
+  },
+  {
+    "title": "Surrealism",
+    "items": 12,
+    "image": "./images/photos/Genres/Surrealism.jpg"
+  },
+  {
+    "title": "Stil life",
+    "items": 13,
+    "image": "./images/photos/Genres/StillLife.jpg"
+  },
+  {
+    "title": "Landscape",
+    "items": 14,
+    "image": "./images/photos/Genres/Landscape.jpg"
+  },
+  {
+    "title": "Pop",
+    "items": 15,
+    "image": "./images/photos/Genres/Pop.jpg"
+  }
+]
