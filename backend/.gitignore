@@ -1,4 +1,14 @@
+# Ignore the  environment folder
 .env
+
+# Ignore the virtual environment folder
+myVenv/
+
+# Ignore all __pycache__ folders
+*/__pycache__/
+
+# Ignore all migration folders
+*/migrations/
+
+# Ignore SQLite database file
 db.sqlite3
-__pycache__
-migrations
