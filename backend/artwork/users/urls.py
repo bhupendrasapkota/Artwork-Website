@@ -9,4 +9,5 @@ urlpatterns = [
     path('password-reset/', views.request_password_reset, name='password_reset'),
     path('password-reset/confirm/', views.reset_password_confirm, name='password_reset_confirm'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('user-info/', views.get_user_info, name='get_user_info'),
 ]

@@ -59,13 +59,20 @@ def login_api(request):
             "user": {
                 "id": user.id,
                 "username": user.username,
-                "email": user.email,
             }
         }, status=200)
     
     return Response({"error": "Invalid credentials"}, status=401)
 
-
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_info(request):
+    user = request.user
+    return Response({
+        "id": user.id,
+        "username": user.username,
+        "profile_picture": user.profile.profile_picture.url if user.profile.profile_picture else None,
+    })
 
 
 # Delete User API

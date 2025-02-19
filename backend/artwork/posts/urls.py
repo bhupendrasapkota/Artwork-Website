@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import get_categories, user_posts
+from .views import get_categories
 
 urlpatterns = [
     path('create/', views.create_post, name='create_post'),
@@ -9,6 +9,5 @@ urlpatterns = [
     path('<int:post_id>/comment/', views.add_comment, name='add_comment'),
     path('most-liked/', views.most_liked_posts, name='most_liked_posts'),
     path('categories/', get_categories, name='get_categories'),
-    path("user/", user_posts, name="user-posts"), 
 
 ]

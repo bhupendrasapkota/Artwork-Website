@@ -1,24 +1,35 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework import status
-from .models import Post
+from .models import Post, Category
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Count
+from django.shortcuts import get_object_or_404
 
-# Upload a new post
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_post(request):
+    category_id = request.data.get("category")
+    
+    if not category_id:
+        return Response({"error": "Category ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        category_id = int(category_id)
+    except ValueError:
+        return Response({"error": "Invalid category ID"}, status=status.HTTP_400_BAD_REQUEST)
+
+    category = get_object_or_404(Category, id=category_id)
+
     serializer = PostSerializer(data=request.data, context={'request': request})
-    
     if serializer.is_valid():
-        serializer.save(user=request.user)
+        serializer.save(user=request.user, category=category)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -65,12 +76,21 @@ class CustomPagination(PageNumberPagination):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def list_posts(request):
-    posts = Post.objects.all().order_by('-created_at')
+    # If `user_id` is passed, filter by that user
+    user_id = request.query_params.get('user_id')
+
+    if user_id:
+        posts = Post.objects.filter(user_id=user_id).order_by('-created_at')
+    else:
+        posts = Post.objects.all().order_by('-created_at')
+
     paginator = CustomPagination()
     result_page = paginator.paginate_queryset(posts, request)
     serializer = PostSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
+
 
 
 @api_view(['GET'])
@@ -82,16 +102,18 @@ def most_liked_posts(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_categories(request):
-    categories = [category[0] for category in Post.CATEGORY_CHOICES]
-    return Response({"categories": categories})
+    categories = Category.objects.annotate(post_count=Count("posts"))
 
+    categories_data = [
+        {
+            "id": category.id,
+            "name": category.name,
+            "post_count": category.post_count,
+            "image": request.build_absolute_uri(category.image.url)
+        }
+        for category in categories
+    ]
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])  # Ensure only logged-in users can access
-def user_posts(request):
-    posts = Post.objects.filter(user=request.user).order_by('-created_at')  # Get only the logged-in user's posts
-    paginator = CustomPagination()
-    result_page = paginator.paginate_queryset(posts, request)
-    serializer = PostSerializer(result_page, many=True)
-    return paginator.get_paginated_response(serializer.data)
+    return Response({"categories": categories_data})

@@ -1,11 +1,12 @@
 from rest_framework import serializers
-from .models import Post, Comment
+from .models import Post, Comment, Category
 
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     profile_picture = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
     liked_by = serializers.SerializerMethodField()
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all()) 
     
     def get_profile_picture(self, obj):
         if obj.user.profile.profile_picture:
