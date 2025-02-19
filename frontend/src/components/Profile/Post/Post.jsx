@@ -9,14 +9,15 @@ const Post = () => {
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(""); // Keep track of category by id
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // Fetch categories from Django when modal opens
   useEffect(() => {
     if (modalIsOpen) {
-      api.get("api/posts/categories/")
+      api
+        .get("/posts/categories/")
         .then((response) => setCategories(response.data.categories))
         .catch((error) => console.error("Error fetching categories:", error));
     }
@@ -42,15 +43,15 @@ const Post = () => {
     formData.append("image", image);
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("category", category);
+    formData.append("category", category); // Ensure category is sent as the id
 
     try {
-      await api.post("api/posts/create/", formData);
+      await api.post("/posts/create/", formData);
       setModalIsOpen(false);
       setImage(null);
       setTitle("");
       setDescription("");
-      setCategory("");
+      setCategory(""); // Reset category state after submit
     } catch (error) {
       console.error("Error uploading post:", error);
       alert("Failed to upload post.");
@@ -89,7 +90,12 @@ const Post = () => {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             {/* Image Upload */}
-            <input type="file" accept="image/*" onChange={handleImageChange} required />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              required
+            />
 
             {/* Title */}
             <input
@@ -117,8 +123,9 @@ const Post = () => {
             >
               <option value="">Select Category</option>
               {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
+                // Use cat.id as the value for the category select field
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
                 </option>
               ))}
             </select>

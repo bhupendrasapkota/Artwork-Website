@@ -10,8 +10,11 @@ const refreshToken = async () => {
     const refresh = localStorage.getItem("refresh_token");
     if (!refresh) throw new Error("No refresh token found");
 
-    const response = await axios.post("http://127.0.0.1:8000/api/users/refresh/", { refresh });
-    
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api/users/refresh/",
+      { refresh }
+    );
+
     localStorage.setItem("access_token", response.data.access);
     return response.data.access; // Return new access token
   } catch (error) {
@@ -40,13 +43,26 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true; // Prevent infinite retry loops
+
       const newToken = await refreshToken();
       if (newToken) {
         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
         return api(originalRequest); // Retry the original request
       }
+    }
+
+    // Handle additional response status codes as needed
+    if (error.response && error.response.status === 403) {
+      console.error(
+        "Forbidden access, you don't have permission to perform this action."
+      );
+      // Optionally redirect to a page like "access-denied" or show a message
     }
 
     return Promise.reject(error);

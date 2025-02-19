@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import api from "../../../Hooks/api/api"; // Import the updated API file
+import api from "../../../Hooks/api/api";
 
 const Signin = () => {
   const [username, setUsername] = useState("");
@@ -22,16 +22,19 @@ const Signin = () => {
 
       console.log("Login Successful:", response.data);
 
-      // ✅ Store tokens properly
+
       localStorage.setItem("access_token", response.data.access_token);
       localStorage.setItem("refresh_token", response.data.refresh_token);
-      localStorage.setItem("userToken", response.data.access_token); // Keep for compatibility
 
-      // ✅ Debugging: Check if tokens are actually stored
+
       console.log("Stored access_token:", localStorage.getItem("access_token"));
       console.log("Stored refresh_token:", localStorage.getItem("refresh_token"));
 
-      // ✅ Redirect user after successful login
+      const user = await api.get("/users/user-info/");
+      localStorage.setItem("Username", user.data.username);
+
+      window.dispatchEvent(new Event("storage"));
+
       navigate("/profile");
       console.log("Navigating to /profile");
 

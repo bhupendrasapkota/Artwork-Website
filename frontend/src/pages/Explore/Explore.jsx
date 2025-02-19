@@ -3,9 +3,9 @@ import Banner from "./ExploreBanner/Banner";
 
 const Explore = () => {
   return (
-    <section className="space-y-10 pt-24">
+    <section className="pt-24">
       <Banner />
-      <div className="p-10 flex space-x-10">
+      <div className="flex pl-20 pb-20 pr-20">
         <Items />
       </div>
     </section>
