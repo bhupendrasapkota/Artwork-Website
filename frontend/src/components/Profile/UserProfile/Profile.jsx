@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchProfileData, updateProfile } from "../../../Hooks/api/api"; // Import functions
+import { fetchProfileData, updateProfile } from "../../../Hooks/api/api";
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -19,13 +19,10 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isMove) {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
+    if (!localStorage.getItem("access_token")) {
+      navigate("/api/users/login");
     }
-    return () => document.body.classList.remove("overflow-hidden");
-  }, [isMove]);
+  }, [navigate]);
 
   useEffect(() => {
     fetchProfileData(setProfile, setError, setLoading);
@@ -43,15 +40,8 @@ const Profile = () => {
   }, []);
 
   const handleSubmit = () => {
-    updateProfile(
-      profile,
-      selectedFile,
-      setIsEditing,
-      setIsMove,
-      () => fetchProfileData(setProfile, setError, setLoading),
-      setError,
-      setLoading
-    );
+    updateProfile(profile, selectedFile, setProfile);
+    setIsEditing(false);
   };
 
   const previewImage = useMemo(() => {
@@ -68,13 +58,6 @@ const Profile = () => {
       }
     };
   }, [previewImage]);
-
-  useEffect(() => {
-    if (!localStorage.getItem("access_token")) {
-      navigate("/users/login");
-    }
-  }, [navigate]);
-
   if (loading) return <p className="text-center text-gray-600">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
