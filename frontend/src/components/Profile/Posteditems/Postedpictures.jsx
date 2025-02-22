@@ -1,6 +1,6 @@
 import Masonry from "react-masonry-css";
 import { useEffect, useState } from "react";
-import api from "../../../Hooks/api/api";
+import { fetchUserPosts } from "../../../Hooks/api/api";
 import { FaHeart } from "react-icons/fa";
 
 const Postedpictures = () => {
@@ -9,40 +9,22 @@ const Postedpictures = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchUserPosts = async () => {
+    const getPosts = async () => {
+      setLoading(true);
+      setError("");
+
       try {
-        const token = localStorage.getItem("access_token");
-        if (!token) {
-          setError("User not logged in.");
-          setLoading(false);
-          return;
-        }
-
-        // Fetch logged-in user's info
-        const userResponse = await api.get("/users/user-info/");
-        const userId = userResponse.data.id; // Get user ID
-
-        // Fetch posts for this user
-        const response = await api.get(`/posts/all/?user_id=${userId}`);
-
-        console.log("User ID:", userId);
-        console.log("API Response:", response.data);
-
-        if (Array.isArray(response.data.results)) {
-          setPosts(response.data.results);
-        } else {
-          console.error("Unexpected response format:", response.data);
-          setPosts([]);
-        }
-      } catch (error) {
-        console.error("Error fetching posts:", error);
+        const userPosts = await fetchUserPosts();
+        setPosts(Array.isArray(userPosts) ? userPosts : []);
+      } catch (err) {
+        console.error("Error fetching posts:", err);
         setError("Failed to load posts.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserPosts();
+    getPosts();
   }, []);
 
   const breakpointColumns = {
@@ -52,7 +34,7 @@ const Postedpictures = () => {
     500: 1,
   };
 
-  if (loading) return <p>Loading posts...</p>;
+  if (loading) return <p className="text-gray-500">Loading posts...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
@@ -62,7 +44,7 @@ const Postedpictures = () => {
       columnClassName="masonry-column space-y-4"
     >
       {posts.length === 0 ? (
-        <p>No posts found.</p>
+        <p className="text-gray-500">No posts found.</p>
       ) : (
         posts.map((post) => (
           <div
@@ -71,7 +53,7 @@ const Postedpictures = () => {
           >
             <img
               src={
-                post.image.startsWith("http")
+                post.image?.startsWith("http")
                   ? post.image
                   : `http://127.0.0.1:8000${post.image}`
               }

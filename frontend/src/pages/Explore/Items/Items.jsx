@@ -1,28 +1,18 @@
 import Masonry from "react-masonry-css";
 import { useEffect, useState } from "react";
-import api from "../../../Hooks/api/api";
-import { FaHeart, FaDownload } from "react-icons/fa";
+import { fetchPosts } from "../../../Hooks/api/api"; // Import the API function
+import { FaHeart, FaDownload, FaPlus } from "react-icons/fa";
 
 const Items = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    api
-      .get("/posts/all/")
-      .then((response) => {
-        console.log("API Response:", response.data.results);
+    const loadPosts = async () => {
+      const data = await fetchPosts();
+      setPosts(data);
+    };
 
-        if (response.data && Array.isArray(response.data.results)) {
-          setPosts(response.data.results);
-        } else {
-          console.error("Unexpected response format:", response.data);
-          setPosts([]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching posts:", error);
-        setPosts([]);
-      });
+    loadPosts();
   }, []);
 
   const breakpointColumns = {
@@ -65,7 +55,7 @@ const Items = () => {
             <img
               src={`http://127.0.0.1:8000${post.profile_picture}`}
               alt={post.user}
-              className="w-10 h-10 rounded-full  object-cover"
+              className="w-10 h-10 rounded-full object-cover"
             />
             <div className="flex flex-col items-start justify-start bg-transparent">
               <span className="text-white bg-transparent text-lg font-sans">
@@ -82,7 +72,7 @@ const Items = () => {
                 <FaHeart className=" w-4 h-4" />
               </div>
               <div className="absolute top-3 left-80 p-2 flex items-center justify-center rounded bg-white">
-                <FaHeart className=" w-4 h-4" />
+                <FaPlus className=" w-4 h-4" />
               </div>
             </div>
 

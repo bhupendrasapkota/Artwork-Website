@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import api from "../../../Hooks/api/api";
+import { fetchCategories } from "../../../Hooks/api/api"; // Import API function
 
 // Custom Arrow Buttons
 const PrevArrow = ({ onClick }) => (
@@ -28,18 +28,14 @@ const NextArrow = ({ onClick }) => (
 const Banner = () => {
   const [categories, setCategories] = useState([]);
 
-  // Fetch categories from the API on component mount
+  // Fetch categories from API
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await api.get("/posts/categories/");
-        setCategories(response.data.categories); // Store fetched categories in state
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
+    const loadCategories = async () => {
+      const data = await fetchCategories();
+      setCategories(data);
     };
 
-    fetchCategories();
+    loadCategories();
   }, []);
 
   const settings = {
@@ -76,9 +72,9 @@ const Banner = () => {
   };
 
   return (
-    <section className="relative flex flex-col justify-center items-center text-black space-y-5 border-t border-black h-auto font-mono">
-      <div className="w-full flex items-center justify-between px-10 uppercase">
-        <div className="text-lg">Genres</div>
+    <section className="relative flex flex-col justify-center items-center text-black border-t border-black h-auto font-mono">
+      <div className="w-full h-12 flex items-center justify-center px-10 uppercase">
+        <div className="text-3xl">Explore</div>
       </div>
       <div className="w-full h-96 overflow-x-auto scrollbar-none">
         <Slider
@@ -90,24 +86,22 @@ const Banner = () => {
               <div
                 className="w-80 flex-shrink-0 border border-black hover:border-zinc-300 overflow-hidden"
                 style={{
-                  width: "clamp(200px, 25vw, 400px)", // Responsive width using clamp
+                  width: "clamp(200px, 25vw, 400px)", // Responsive width
                 }}
               >
                 <div className="relative">
                   <img
-                    src={category.image} // Corrected image reference
-                    alt={`${category.name} genre`} // Corrected alt text
+                    src={category.image}
+                    alt={`${category.name} genre`}
                     className="w-full h-50 object-cover border-b border-b-black"
                   />
                 </div>
                 <div className="p-3 border-t border-t-black">
                   <h2 className="text-lg text-[clamp(.9rem,2vw,1rem)]">
-                    <Link to="/">{category.name}</Link>{" "}
-                    {/* Corrected category reference */}
+                    <Link to="/">{category.name}</Link>
                   </h2>
                   <h3 className="text-gray-600 text-sm text-[clamp(1rem)]">
-                    {category.post_count} Items{" "}
-                    {/* Corrected category reference */}
+                    {category.post_count} Items
                   </h3>
                 </div>
               </div>
@@ -115,13 +109,6 @@ const Banner = () => {
           ))}
         </Slider>
       </div>
-      <button
-        className="absolute flex items-center justify-center top-80 z-10 bg-transparent text-black p-2 w-auto h-20"
-      >
-        <h1 className="text-2xl">
-          Hello Everyone having fun dfvdvdsnfdv nokfdnvodfvnofvn ovndfovndfovnfvoenfv  niovnfovnfdv onvovnofd
-        </h1>
-      </button>
     </section>
   );
 };

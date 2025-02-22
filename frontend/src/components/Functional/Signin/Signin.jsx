@@ -4,43 +4,54 @@ import { useNavigate } from "react-router-dom";
 import api from "../../../Hooks/api/api";
 
 const Signin = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
 
-    if (!username || !password) {
+    if (!formData.username || !formData.password) {
       setErrorMessage("Please fill all the fields.");
       return;
     }
 
+    setLoading(true);
     try {
-      const response = await api.post("/users/login/", { username, password });
+      const { data } = await api.post("/users/login/", formData);
 
-      console.log("Login Successful:", response.data);
+      console.log("Login Successful:", data);
 
+      // Store tokens properly
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
 
-      localStorage.setItem("access_token", response.data.access_token);
-      localStorage.setItem("refresh_token", response.data.refresh_token);
+      console.log("Stored access_token:", data.access_token);
+      console.log("Stored refresh_token:", data.refresh_token);
 
+      // Fetch user info after login
+      const userResponse = await api.get("/users/user-info/");
+      localStorage.setItem("username", userResponse.data.username);
 
-      console.log("Stored access_token:", localStorage.getItem("access_token"));
-      console.log("Stored refresh_token:", localStorage.getItem("refresh_token"));
-
-      const user = await api.get("/users/user-info/");
-      localStorage.setItem("Username", user.data.username);
-
+      // Notify other tabs about login status
       window.dispatchEvent(new Event("storage"));
 
       navigate("/profile");
-      console.log("Navigating to /profile");
-
     } catch (error) {
       console.error("Login error:", error.response?.data || error);
       setErrorMessage(error.response?.data?.error || "Invalid credentials.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,27 +61,26 @@ const Signin = () => {
         className="border border-black p-2 w-96 h-16"
         type="text"
         name="username"
-        id="username"
         placeholder="Enter Username"
         autoComplete="username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        value={formData.username}
+        onChange={handleChange}
       />
       <input
         className="border border-black p-2 w-96 h-16"
         type="password"
         name="password"
-        id="password"
         placeholder="Password"
         autoComplete="current-password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        value={formData.password}
+        onChange={handleChange}
       />
       <button
         type="submit"
         className="group flex items-center justify-center border border-black gap-2 w-96 h-12 py-2 px-4 hover:text-white hover:bg-black"
+        disabled={loading}
       >
-        Sign In
+        {loading ? "Signing in..." : "Sign In"}
         <FaArrowRight className="text-xs group-hover:text-white" />
       </button>
       <button

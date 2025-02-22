@@ -3,21 +3,17 @@ import Profile from "../navpro/Prof/Profile";
 import Inup from "../navpro/Inup/Inup";
 
 const Change = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    !!localStorage.getItem("access_token")
-  );
+  const getAuthStatus = () => !!localStorage.getItem("access_token");
+  const [isLoggedIn, setIsLoggedIn] = useState(getAuthStatus);
 
   useEffect(() => {
     const checkAuth = () => {
-      setIsLoggedIn(!!localStorage.getItem("access_token"));
+      const authStatus = getAuthStatus();
+      setIsLoggedIn((prev) => (prev !== authStatus ? authStatus : prev));
     };
 
-    // Listen for storage changes (login/logout in another tab)
     window.addEventListener("storage", checkAuth);
-
-    return () => {
-      window.removeEventListener("storage", checkAuth);
-    };
+    return () => window.removeEventListener("storage", checkAuth);
   }, []);
 
   return (

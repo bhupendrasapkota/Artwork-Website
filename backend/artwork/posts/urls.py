@@ -3,6 +3,7 @@ from . import views
 from .views import get_categories
 
 urlpatterns = [
+    path('user/<int:user_id>/', views.user_posts, name='user_posts'),
     path('create/', views.create_post, name='create_post'),
     path('all/', views.list_posts, name='list_posts'),
     path('<int:post_id>/like/', views.like_post, name='like_post'),

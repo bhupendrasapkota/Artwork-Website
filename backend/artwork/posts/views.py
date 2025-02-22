@@ -30,6 +30,21 @@ def create_post(request):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_posts(request, user_id):
+    """Fetch all posts created by a specific user."""
+    posts = Post.objects.filter(user_id=user_id).order_by('-created_at')
+
+    if not posts.exists():
+        return Response([], status=status.HTTP_200_OK) 
+
+    paginator = CustomPagination()
+    result_page = paginator.paginate_queryset(posts, request)
+    serializer = PostSerializer(result_page, many=True)
+
+    return paginator.get_paginated_response(serializer.data)
+
 
 
 
@@ -95,7 +110,10 @@ def list_posts(request):
 
 @api_view(['GET'])
 def most_liked_posts(request):
-    posts = Post.objects.annotate(like_count=Count('likes')).order_by('-like_count')[:10]  
+    posts = Post.objects.annotate(like_count=Count('likes')) \
+                        .filter(like_count__gt=5) \
+                        .order_by('-like_count')[:10]
+
     serializer = PostSerializer(posts, many=True)
     return Response(serializer.data)
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../../Hooks/api/api";
+import { fetchProfileData, updateProfile } from "../../../Hooks/api/api"; // Import functions
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -27,29 +27,14 @@ const Profile = () => {
     return () => document.body.classList.remove("overflow-hidden");
   }, [isMove]);
 
-  const fetchProfileData = useCallback(async () => {
-    try {
-      const { data } = await api.get("/profile/get-profile/");
-      setProfile(data);
-    } catch (err) {
-      const error = err.response?.data?.detail || "Failed to load profile.";
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    fetchProfileData(setProfile, setError, setLoading);
   }, []);
 
-  useEffect(() => {
-    fetchProfileData();
-  }, [fetchProfileData]);
-
-  const handleInputChange = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      setProfile((prev) => ({ ...prev, [name]: value }));
-    },
-    []
-  );
+  const handleInputChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setProfile((prev) => ({ ...prev, [name]: value }));
+  }, []);
 
   const handleFileChange = useCallback((e) => {
     if (e.target.files && e.target.files[0]) {
@@ -57,31 +42,16 @@ const Profile = () => {
     }
   }, []);
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const formData = new FormData();
-      formData.append("username", profile.username);
-      formData.append("bio", profile.bio);
-      formData.append("about_me", profile.about_me);
-      formData.append("contact", profile.contact);
-      if (selectedFile) {
-        formData.append("profile_picture", selectedFile);
-      }
-
-      await api.put("/profile/update-profile/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      setIsEditing(false);
-      fetchProfileData();
-    } catch (err) {
-      const error = err.response?.data?.detail || "Failed to update profile.";
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
+  const handleSubmit = () => {
+    updateProfile(
+      profile,
+      selectedFile,
+      setIsEditing,
+      setIsMove,
+      () => fetchProfileData(setProfile, setError, setLoading),
+      setError,
+      setLoading
+    );
   };
 
   const previewImage = useMemo(() => {
@@ -127,8 +97,12 @@ const Profile = () => {
         />
 
         <div className="mt-4 text-center flex flex-col items-center justify-center">
-          <h2 className="text-xl font-bold">{profile.username || "Unknown User"}</h2>
-          <p className="text-sm text-gray-500">{profile.bio || "No bio available"}</p>
+          <h2 className="text-xl font-bold">
+            {profile.username || "Unknown User"}
+          </h2>
+          <p className="text-sm text-gray-500">
+            {profile.bio || "No bio available"}
+          </p>
           <button
             onClick={() => {
               setIsEditing(true);
@@ -178,7 +152,9 @@ const Profile = () => {
                 accept="image/*"
                 onChange={handleFileChange}
               />
-              <p className="text-xs text-gray-500 mt-2">Click image to change</p>
+              <p className="text-xs text-gray-500 mt-2">
+                Click image to change
+              </p>
             </div>
 
             {/* Other Profile Inputs */}
@@ -214,10 +190,7 @@ const Profile = () => {
 
             <div className="flex justify-end gap-2">
               <button
-                onClick={() => {
-                  setIsMove(false);
-                  handleSubmit();
-                }}
+                onClick={handleSubmit}
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
               >
                 Save
