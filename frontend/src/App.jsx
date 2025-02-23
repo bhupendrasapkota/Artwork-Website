@@ -11,7 +11,7 @@ import Footer from "./components/Footer/Footer";
 import Login from "./pages/register/login";
 import Signup from "./pages/register/signup";
 import Explore from "./pages/Explore/Explore";
-import Feed from "./pages/Feed/Feed";
+import Collect from "./pages/Collection/collection";
 import Trending from "./pages/Trending/Trending";
 import Download from "./pages/Download/Download";
 import Profile from "./components/Profile/Profie";
@@ -81,10 +81,10 @@ function App() {
             }
           />
           <Route
-            path="/feed"
+            path="/collection"
             element={
               <ProtectedRoute>
-                <Feed />
+                <Collect />
               </ProtectedRoute>
             }
           />

@@ -21,7 +21,7 @@ const Navbar = () => {
   const navLinks = [
     { to: "/Explore", label: "Explore" },
     { to: "/trending", label: "Trending" },
-    { to: "/feed", label: "Feed" },
+    { to: "/collection", label: "Collection" },
     { to: "/download", label: "Download" },
   ];
 
