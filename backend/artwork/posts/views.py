@@ -85,7 +85,7 @@ def add_comment(request, post_id):
 
 
 class CustomPagination(PageNumberPagination):
-    page_size = 10  # Show 10 posts per page
+    page_size = 50  # Show 10 posts per page
     page_size_query_param = 'page_size'
     max_page_size = 100
 
