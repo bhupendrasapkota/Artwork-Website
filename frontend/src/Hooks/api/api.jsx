@@ -16,10 +16,8 @@ const setTokens = (access, refresh) => {
 };
 
 export const clearAuth = () => {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
-  localStorage.removeItem("username"); // ✅ Clear stored username
-  cachedUserInfo = null; // ✅ Clear cached user info
+  localStorage.clear();
+  cachedUserInfo = null;
   window.location.href = "/login";
 };
 
