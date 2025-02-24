@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import status
 from user_profile.models import Profile
+from posts.models import Post
 
 # Sign-up API
 @api_view(['POST'])
@@ -158,3 +159,21 @@ def reset_password_confirm(request):
     cache.delete(f"reset_code_{email}")
 
     return Response({"message": "Password reset successful."}, status=200)
+
+@api_view(['GET'])
+def get_all_users(request):
+    current_user = request.user
+    users = User.objects.exclude(id=current_user.id)
+    data = [
+        {
+            "id": user.id,
+            "username": user.username,
+            "bio": user.profile.bio if hasattr(user, "profile") else "",
+            "profile_picture": request.build_absolute_uri(user.profile.profile_picture.url) if hasattr(user, "profile") and user.profile.profile_picture else None,
+            "recent_posts": [
+                request.build_absolute_uri(post.image.url) for post in Post.objects.filter(user=user).order_by('-created_at')[:3]
+            ]  # Fetch 3 most recent posts for each user
+        }
+        for user in users
+    ]
+    return Response(data)

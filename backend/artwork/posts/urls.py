@@ -10,5 +10,7 @@ urlpatterns = [
     path('<int:post_id>/comment/', views.add_comment, name='add_comment'),
     path('most-liked/', views.most_liked_posts, name='most_liked_posts'),
     path('categories/', get_categories, name='get_categories'),
+    path('latest-six/', views.get_recent_posts, name='get_recent_posts'),
+
 
 ]

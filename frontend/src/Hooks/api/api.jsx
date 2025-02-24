@@ -116,6 +116,14 @@ const fetchData = async (
 };
 
 /* --- API Calls --- */
+export const fetchAllUsers = async () => {
+  return await fetchData("/users/all/");
+};
+
+export const fetchRecentPosts = async () => {
+  return await fetchData("posts/latest-six/");
+};
+
 export const fetchCategories = async () =>
   (await fetchData("/posts/categories/"))?.categories || [];
 export const fetchPosts = async (page = 1, pageSize = 50) =>

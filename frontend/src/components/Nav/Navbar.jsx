@@ -22,7 +22,7 @@ const Navbar = () => {
     { to: "/Explore", label: "Explore" },
     { to: "/trending", label: "Trending" },
     { to: "/collection", label: "Collection" },
-    { to: "/download", label: "Download" },
+    { to: "/users", label: "Users" },
   ];
 
   const renderNavLinks = () =>

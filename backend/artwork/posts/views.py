@@ -135,3 +135,17 @@ def get_categories(request):
     ]
 
     return Response({"categories": categories_data})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_recent_posts(request):
+    user = request.user
+    posts = Post.objects.filter(user=user).order_by('-created_at')[:8] 
+    data = [
+        {
+            "id": post.id,
+            "image": request.build_absolute_uri(post.image.url),
+        }
+        for post in posts
+    ]
+    return Response(data)

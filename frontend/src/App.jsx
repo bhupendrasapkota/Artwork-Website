@@ -13,7 +13,7 @@ import Signup from "./pages/register/signup";
 import Explore from "./pages/Explore/Explore";
 import Collect from "./pages/Collection/collection";
 import Trending from "./pages/Trending/Trending";
-import Download from "./pages/Download/Download";
+import User from "./pages/User/Users";
 import Profile from "./components/Profile/Profie";
 import NotFound from "./pages/NotFound/Notfound";
 
@@ -89,10 +89,10 @@ function App() {
             }
           />
           <Route
-            path="/download"
+            path="/users"
             element={
               <ProtectedRoute>
-                <Download />
+                <User />
               </ProtectedRoute>
             }
           />

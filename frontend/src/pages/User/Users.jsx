@@ -1,15 +1,15 @@
 import Items from "./Items/Items";
-import Banner from "./CollectionBanner/Banner";
+import Banner from "./UserBanner/Banner";
 
-const Collection = () => {
+const Users = () => {
   return (
     <section className="pt-24">
       <Banner />
-      <div className="pl-15 pb-20 pr-15">
+      <div className="pl-15 pb-16 pr-15">
         <Items />
       </div>
     </section>
   );
 };
 
-export default Collection;
+export default Users;

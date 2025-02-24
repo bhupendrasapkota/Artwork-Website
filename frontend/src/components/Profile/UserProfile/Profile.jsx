@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import About_recent from "./Items/About_recent";
 import { fetchProfileData, updateProfile } from "../../../Hooks/api/api";
 
 const Profile = () => {
@@ -105,7 +106,7 @@ const Profile = () => {
           </h3>
           <p className="mt-3 text-sm text-gray-600">{profile.about_me}</p>
         </div>
-
+        <About_recent />
         <div className="border p-4">
           <h3 className="text-lg font-semibold text-gray-700 border-b border-black pb-4">
             Connect
