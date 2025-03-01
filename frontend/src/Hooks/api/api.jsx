@@ -137,7 +137,7 @@ export const fetchUserInfo = async () => {
   const data = await fetchData("/users/user-info/");
   if (data) {
     cachedUserInfo = data;
-    localStorage.setItem("username", data.username); // ✅ Store username for better navigation
+    localStorage.setItem("username", data.username);
   }
   return cachedUserInfo || { username: "Unknown", profile_picture: "" };
 };
